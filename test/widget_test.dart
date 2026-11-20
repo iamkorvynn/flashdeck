@@ -65,7 +65,9 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: StatChip(label: 'Day streak', value: '7'),
+          body: Row(
+            children: [StatChip(label: 'Day streak', value: '7')],
+          ),
         ),
       ),
     );
@@ -89,6 +91,7 @@ void main() {
     expect(find.text('What is 2 + 2?'), findsOneWidget);
     expect(find.text('4'), findsNothing);
     await tester.tap(find.text('What is 2 + 2?'));
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('4'), findsOneWidget);
   });
