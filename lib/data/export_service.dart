@@ -74,3 +74,77 @@ class ExportService {
     };
   }
 }
+
+/// Result of an import: how many decks and cards were created.
+class ImportResult {
+  final int decksImported;
+  final int cardsImported;
+
+  const ImportResult({required this.decksImported, required this.cardsImported});
+}
+
+extension ExportServiceImport on ExportService {
+  /// Parses [jsonText] and inserts its decks/cards with fresh ids.
+  /// Throws [FormatException] on malformed input.
+  Future<ImportResult> importJson(String jsonText) async {
+    final decoded = jsonDecode(jsonText);
+    if (decoded is! Map<String, Object?>) {
+      throw const FormatException('Import must be a JSON object');
+    }
+    if (decoded['format'] != 'flashdeck') {
+      throw const FormatException('Not a FlashDeck export file');
+    }
+    final decksRaw = decoded['decks'];
+    if (decksRaw is! List) {
+      throw const FormatException('Export is missing its decks list');
+    }
+
+    var decksImported = 0;
+    var cardsImported = 0;
+    for (final deckRaw in decksRaw) {
+      if (deckRaw is! Map<String, Object?>) continue;
+      final name = deckRaw['name'];
+      if (name is! String || name.trim().isEmpty) continue;
+      final deck = Deck.create(
+        name: name,
+        description: (deckRaw['description'] as String?) ?? '',
+      );
+      await _decks.insert(deck);
+      decksImported += 1;
+
+      final cardsRaw = deckRaw['cards'];
+      if (cardsRaw is! List) continue;
+      for (final cardRaw in cardsRaw) {
+        if (cardRaw is! Map<String, Object?>) continue;
+        final front = cardRaw['front'];
+        final back = cardRaw['back'];
+        if (front is! String || back is! String) continue;
+        if (front.trim().isEmpty || back.trim().isEmpty) continue;
+        final now = DateTime.now();
+        final dueMillis = cardRaw['due_at'];
+        final card = Flashcard(
+          id: newId(),
+          deckId: deck.id,
+          front: front.trim(),
+          back: back.trim(),
+          createdAt: now,
+          updatedAt: now,
+          easeFactor: (cardRaw['ease_factor'] as num?)?.toDouble() ?? 2.5,
+          intervalDays: (cardRaw['interval_days'] as num?)?.toInt() ?? 0,
+          repetitions: (cardRaw['repetitions'] as num?)?.toInt() ?? 0,
+          dueAt: dueMillis is int
+              ? DateTime.fromMillisecondsSinceEpoch(dueMillis)
+              : now,
+          lastReviewedAt: null,
+          reviewCount: (cardRaw['review_count'] as num?)?.toInt() ?? 0,
+        );
+        await _cards.insert(card);
+        cardsImported += 1;
+      }
+    }
+    return ImportResult(
+      decksImported: decksImported,
+      cardsImported: cardsImported,
+    );
+  }
+}
