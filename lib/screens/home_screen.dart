@@ -148,6 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 await _load();
               }
               if (value == 'about') {
+                if (!mounted) return;
                 await Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (context) => const AboutScreen(),
