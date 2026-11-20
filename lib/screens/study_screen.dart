@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../models/flashcard.dart';
+import '../models/review_grade.dart';
 import '../study/study_session.dart';
 import '../widgets/flip_card.dart';
 import '../widgets/grade_buttons.dart';
@@ -28,7 +29,7 @@ class _StudyScreenState extends State<StudyScreen> {
     _session = StudySession(cards: widget.cards);
   }
 
-  Future<void> _grade(grade) async {
+  Future<void> _grade(ReviewGrade grade) async {
     await _session.grade(grade);
     setState(() => _flipKey += 1);
   }
