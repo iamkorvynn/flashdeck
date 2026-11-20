@@ -138,23 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           PopupMenuButton<String>(
-            onSelected: (value) async {
+            onSelected: (value) {
               if (value == 'history') {
-                await Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const ReviewHistoryScreen(),
-                  ),
-                );
-                await _load();
-              }
-              if (value == 'about') {
-                if (!mounted) return;
-                await Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const AboutScreen(),
-                  ),
-                );
-                await _load();
+                _openHistory();
+              } else if (value == 'about') {
+                _openAbout();
               }
             },
             itemBuilder: (context) => const [
@@ -226,6 +214,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
             ),
     );
+  }
+
+  Future<void> _openHistory() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => const ReviewHistoryScreen(),
+      ),
+    );
+    if (!mounted) return;
+    await _load();
+  }
+
+  Future<void> _openAbout() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => const AboutScreen(),
+      ),
+    );
+    if (!mounted) return;
+    await _load();
   }
 
   Future<void> _renameDeck(Deck deck) async {
