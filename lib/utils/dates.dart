@@ -1,4 +1,4 @@
-/// Small date helpers used by scheduling and stats. No intl dependency.
+// Small date helpers used by scheduling and stats. No intl dependency.
 
 const List<String> _months = <String>[
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
