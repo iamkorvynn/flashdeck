@@ -31,9 +31,10 @@ void main() {
 
     test('getAll returns newest first', () async {
       final first = Deck.create(name: 'First');
-      final second = Deck.create(name: 'Second');
       await decks.insert(first);
+      // Create the second deck after a delay so its timestamp is later.
       await Future<void>.delayed(const Duration(milliseconds: 5));
+      final second = Deck.create(name: 'Second');
       await decks.insert(second);
       final all = await decks.getAll();
       expect(all.first.name, 'Second');
