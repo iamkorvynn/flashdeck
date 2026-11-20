@@ -10,7 +10,7 @@ import 'deck_repository.dart';
 /// {
 ///   "format": "flashdeck",
 ///   "version": 1,
-///   "exported_at": <epoch ms>,
+///   "exported_at": `<epoch ms>`,
 ///   "decks": [ { "name": ..., "description": ..., "cards": [ {front, back, ...} ] } ]
 /// }
 ///
