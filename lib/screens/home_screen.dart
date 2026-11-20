@@ -10,8 +10,10 @@ import '../widgets/deck_tile.dart';
 import '../widgets/due_summary_card.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/library_header.dart';
+import 'about_screen.dart';
 import 'deck_detail_screen.dart';
 import 'import_export_screen.dart';
+import 'review_history_screen.dart';
 import 'search_screen.dart';
 import 'stats_screen.dart';
 import 'study_screen.dart';
@@ -134,6 +136,30 @@ class _HomeScreenState extends State<HomeScreen> {
               );
               await _load();
             },
+          ),
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'history') {
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => const ReviewHistoryScreen(),
+                  ),
+                );
+                await _load();
+              }
+              if (value == 'about') {
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => const AboutScreen(),
+                  ),
+                );
+                await _load();
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'history', child: Text('Review history')),
+              PopupMenuItem(value: 'about', child: Text('About FlashDeck')),
+            ],
           ),
         ],
       ),
