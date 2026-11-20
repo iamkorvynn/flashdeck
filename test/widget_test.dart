@@ -1,30 +1,28 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:flashdeck/app.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'package:flashdeck/main.dart';
+import 'helpers/test_db.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    initTestDb();
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() async {
+    await resetTestDb();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  tearDown(resetTestDb);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('home shows empty state when no decks exist',
+      (tester) async {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    await tester.pumpWidget(const FlashDeckApp());
+    await tester.pumpAndSettle();
+    expect(find.text('FlashDeck'), findsOneWidget);
+    expect(find.text('No decks yet'), findsOneWidget);
+    expect(find.text('Create a deck'), findsWidgets);
   });
 }
