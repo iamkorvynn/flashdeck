@@ -19,6 +19,11 @@ class DatabaseHelper {
   /// Current schema version. Bump when changing onCreate/onUpgrade.
   static const int schemaVersion = 1;
 
+  /// Test-only override for the database path. Tests set this to
+  /// [inMemoryDatabasePath] so each test file gets an isolated database
+  /// instead of sharing the on-disk file.
+  static String? testDatabasePath;
+
   Database? _db;
 
   /// Opens (creating if needed) and returns the database.
@@ -26,7 +31,7 @@ class DatabaseHelper {
     final existing = _db;
     if (existing != null) return existing;
     final db = await openDatabase(
-      p.join(await getDatabasesPath(), _fileName),
+      testDatabasePath ?? p.join(await getDatabasesPath(), _fileName),
       version: schemaVersion,
       onCreate: _onCreate,
       onConfigure: _onConfigure,
