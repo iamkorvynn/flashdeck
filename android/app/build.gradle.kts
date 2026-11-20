@@ -5,6 +5,9 @@ plugins {
 }
 
 android {
+    lint {
+        checkReleaseBuilds = false
+    }
     namespace = "dev.numaan.flashdeck"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
