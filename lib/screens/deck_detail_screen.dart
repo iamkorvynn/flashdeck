@@ -28,14 +28,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
   final _decks = DeckRepository();
   final _stats = StatsService();
 
-  Deck _deck = const Deck(
-    id: '',
-    name: '',
-    description: '',
-    createdAt: _epoch,
-    updatedAt: _epoch,
-  );
-  static const _epoch = _EpochDate();
+  late Deck _deck;
 
   List<Flashcard> _cardList = [];
   DeckStats? _deckStats;
@@ -224,9 +217,4 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
             ),
     );
   }
-}
-
-/// Compile-time constant epoch used only as a placeholder deck value.
-class _EpochDate extends DateTime {
-  const _EpochDate() : super.fromMillisecondsSinceEpoch(0);
 }
